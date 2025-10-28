@@ -42,5 +42,3 @@ print("\n=== Final PageRank ===")
 for i, score in enumerate(pagerank):
     print(f"Node {i}: {score:.4f}")
 
-haach code thev
-
