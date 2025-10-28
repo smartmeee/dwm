@@ -1,0 +1,46 @@
+import numpy as np
+
+# Hardcoded graph with numeric nodes
+# Nodes: 0, 1, 2, 3
+# adjacency[i][j] = 1 if node i links to node j
+adjacency = np.array([
+    [0, 1, 1, 0],  # Node 0 links to 1 and 2
+    [0, 0, 1, 1],  # Node 1 links to 2 and 3
+    [1, 0, 0, 1],  # Node 2 links to 0 and 3
+    [0, 0, 0, 1]   # Node 3 links to itself
+], dtype=float)
+
+n = adjacency.shape[0]
+
+# Convert adjacency to transition matrix
+M = np.zeros_like(adjacency)
+for i in range(n):
+    if adjacency[i].sum() == 0:
+        M[i] = 1.0 / n
+    else:
+        M[i] = adjacency[i] / adjacency[i].sum()
+
+# PageRank parameters
+d = 0.85
+tol = 1e-6
+pagerank = np.ones(n) / n  # initial ranks
+
+print("Initial PageRank:", pagerank)
+
+# Iterative computation
+delta = 1
+iteration = 1
+while delta > tol:
+    new_rank = (1 - d) / n + d * M.T @ pagerank
+    delta = np.linalg.norm(new_rank - pagerank)
+    pagerank = new_rank
+    print(f"Iteration {iteration}: {pagerank}")
+    iteration += 1
+
+# Final PageRank
+print("\n=== Final PageRank ===")
+for i, score in enumerate(pagerank):
+    print(f"Node {i}: {score:.4f}")
+
+haach code thev
+
