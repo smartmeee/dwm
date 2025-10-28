@@ -1,4 +1,4 @@
-Page rank implementation
+Page rank implementation numpy
 import numpy as np
 # Step 1: Create adjacency matrix
 # 0→1, 1→2, 2→0, 3→0 & 2
@@ -36,3 +36,50 @@ Page 0: 0.372
 Page 1: 0.196
 Page 2: 0.356
 Page 3: 0.076
+
+
+Page rank
+# Step 1: Create adjacency list / matrix manually
+# 0 → 1
+# 1 → 2
+# 2 → 0
+# 3 → 0, 2
+
+A = [
+    [0, 0, 1, 0],  # Page 0
+    [1, 0, 0, 0],  # Page 1
+    [0, 1, 0, 1],  # Page 2
+    [0, 0, 0, 0]   # Page 3
+]
+
+n = len(A)
+d = 0.85  # Damping factor
+
+# Step 2: Build probability matrix (column stochastic)
+M = [[0 for _ in range(n)] for _ in range(n)]
+for j in range(n):
+    out_links = sum(A[i][j] for i in range(n))
+    if out_links == 0:
+        for i in range(n):
+            M[i][j] = 1 / n
+    else:
+        for i in range(n):
+            M[i][j] = A[i][j] / out_links
+
+# Step 3: Initialize ranks
+rank = [1 / n for _ in range(n)]
+
+# Step 4: Iterate until convergence
+for _ in range(100):
+    new_rank = [(1 - d) / n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            new_rank[i] += d * M[i][j] * rank[j]
+    if all(abs(new_rank[i] - rank[i]) < 1e-6 for i in range(n)):
+        break
+    rank = new_rank
+
+# Step 5: Display final PageRank values
+print("Final PageRank values:")
+for i in range(n):
+    print(f"Page {i}: {round(rank[i], 3)}")
